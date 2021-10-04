@@ -1,0 +1,12 @@
+[submodule "external/PX4-Matrix"]
+	path = external/PX4-Matrix
+	url = https://github.com/PX4/PX4-Matrix.git
+[submodule "external/fastdds_actuator_controls"]
+	path = external/fastdds_actuator_controls
+	url = https://github.com/sarath-menon/fastdds_actuator_controls.git
+[submodule "external/fastdds_mocap"]
+	path = external/fastdds_mocap
+	url = https://github.com/sarath-menon/fastdds_mocap.git
+[submodule "external/mahi-gui"]
+	path = external/mahi-gui
+	url = https://github.com/mahilab/mahi-gui.git

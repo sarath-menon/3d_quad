@@ -1,0 +1,7 @@
+struct actuator_commands
+{
+	unsigned long index;
+
+	float motor_commands[4];
+
+};
