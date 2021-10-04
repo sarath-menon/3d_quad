@@ -119,7 +119,7 @@ int main() {
                                   quad.orientation()(3),
                                   quad.orientation()(0)});
 
-      pose_pub.run(msg);
+      pose_pub.publish(msg);
       // std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
     }
   }

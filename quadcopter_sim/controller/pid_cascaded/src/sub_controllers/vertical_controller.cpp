@@ -11,10 +11,10 @@ float PidCascadedController::altitude_controller(const Quadcopter &quad,
   float thrust_command = z_pos_pid(altitude_error, k_p__z, k_i__z, k_d__z, dt);
 
   // Quadcopter Motors have a maximum and minimum speed limit
-  thrust_command =
-      limit(ff_thrust + thrust_command, quad.thrust_max(), quad.thrust_min());
+  thrust_command = math_helper::limit(ff_thrust + thrust_command,
+                                      quad.thrust_max(), quad.thrust_min());
 
-  std::cout << "Altitude error:" << altitude_error << '\n';
+  // std::cout << "Altitude error:" << altitude_error << '\n';
 
   return thrust_command;
 };
