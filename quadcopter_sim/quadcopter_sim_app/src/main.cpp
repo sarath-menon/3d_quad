@@ -29,9 +29,6 @@ int main() {
   }
 
   // To be moved to external controller file
-  // const float altitude_target = 2;
-  // const float y_target = 2;
-
   const float x_target = 2;
   const float y_target = 2;
   const float z_target = 2;
@@ -120,7 +117,7 @@ int main() {
                                   quad.orientation()(0)});
 
       pose_pub.publish(msg);
-      // std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
+      std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
     }
   }
 
