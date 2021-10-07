@@ -16,3 +16,6 @@
 [submodule "lib/dynamics_lib"]
 	path = lib/dynamics_lib
 	url = https://github.com/sarath-menon/dynamics_lib.git
+[submodule "lib/simulator_lib"]
+	path = lib/simulator_lib
+	url = https://github.com/sarath-menon/simulator_lib.git
