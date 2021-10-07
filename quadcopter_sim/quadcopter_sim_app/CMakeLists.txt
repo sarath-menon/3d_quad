@@ -13,7 +13,7 @@ target_link_libraries(quad_3d  PRIVATE
 quadcopter_lib
 primitives_lib
 parts_lib
-helper_lib
+# helper_lib
 controller_lib
 simulator_lib
 )
