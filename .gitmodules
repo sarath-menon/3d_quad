@@ -13,3 +13,6 @@
 [submodule "external/helper"]
 	path = external/helper
 	url = https://github.com/sarath-menon/helper.git
+[submodule "lib/dynamics_lib"]
+	path = lib/dynamics_lib
+	url = https://github.com/sarath-menon/dynamics_lib.git
