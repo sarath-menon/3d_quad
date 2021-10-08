@@ -67,22 +67,11 @@ int main() {
         controller.pitch_angle_controller(quad, attitude_command(1), sim.dt());
 
     // Dynamics function that accepts bidy thrust, torque commands
-    quad.dynamics_direct_thrust_torque(body_thrust_command,
-                                       body_torque_command);
+    quad.dynamics_direct_thrust_torque(body_thrust_command, body_torque_command,
+                                       sim.dt());
 
-    std::cout << "Position:" << quad.position()(0) << '\t' << quad.position()(1)
-              << '\t' << quad.position()(2) << '\n';
-
-    // // Simulate using explicit Euler integration
-    // quad.euler_step(sim.dt());
-
-    // Simulate one timestep
-    sim.simulate_step(quad.position(), quad.velocity(), quad.acceleration(),
-                      quad.orientation(), quad.angular_velocity(),
-                      quad.angular_acceleration());
-
-    quad.set_state(sim.position(), sim.velocity(), sim.orientation(),
-                   sim.angular_velocity());
+    // Simulate using explicit Euler integration
+    quad.euler_step(sim.dt());
 
     // Plot variables for debugging
     //////////////////////////////////////////////////////////////////////////////////

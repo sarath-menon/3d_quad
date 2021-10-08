@@ -17,10 +17,10 @@ public:
   // Private variables
 private:
   // Maximum roll angle for quadcopter
-  float roll_max_ = 0;
+  float roll_max_{};
 
   // Maximum pitch angle for quadcopter
-  float pitch_max_ = 0;
+  float pitch_max_{};
 
   // Thrust produced by each propeller
   float propeller_thrusts[4] = {0, 0, 0, 0};
@@ -36,14 +36,14 @@ private:
   matrix::Vector3f body_torque_command_;
 
   // Maximum thrust can be produced by the quadcopter
-  float thrust_max_ = 0;
+  float thrust_max_{};
 
   // Maximum thrust can be produced by the quadcopter
-  float thrust_min_ = 0;
+  float thrust_min_{};
 
   // Maximum torque that can be produced by the motors
-  float roll_torque_max_ = 0;
-  float pitch_torque_max_ = 0;
+  float roll_torque_max_{};
+  float pitch_torque_max_{};
 
   // Mixer matrix
   matrix::SquareMatrix<float, 4> mixer_matrix_;
@@ -63,8 +63,7 @@ public:
   // Quadcopter dynamics with direct body thryst, torque input
   void
   dynamics_direct_thrust_torque(const matrix::Vector3f &body_thrust_command,
-                                const matrix::Vector3f &body_torque_command,
-                                const float dt);
+                                const matrix::Vector3f &body_torque_command);
   // Quadcopter dynamics
   void euler_step(const float dt);
   // Rotation only simulation for tuning attitude controller
@@ -91,6 +90,7 @@ public:
 public:
   /// Setter function
   void set_roll_max(float roll_max) { roll_max_ = roll_max; }
+
   /// Setter function
   void set_pitch_max(float pitch_max) { pitch_max_ = pitch_max; }
 };

@@ -1,7 +1,7 @@
 # Plot Parameters:
 
 # To enable plotting
-plot_enable: false
+plot_enable: true
 
 # Translation
 x_flag: true

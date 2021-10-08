@@ -10,8 +10,7 @@ float PidCascadedController::y_pos_controller(const Quadcopter &quad,
   //   std::cout << "Horizontal error:" << y_pos_error << '\n';
 
   // Compute required attitude
-  float attitude_command =
-      y_pos_pid(y_pos_error, k_p__y, k_i__y, k_d__y, dt) / 9.81;
+  float attitude_command = y_pos_pid(y_pos_error, k_p__y, k_i__y, k_d__y, dt);
 
   attitude_command =
       -math_helper::limit(attitude_command, quad.roll_max(), -quad.roll_max());
@@ -30,8 +29,7 @@ float PidCascadedController::x_pos_controller(const Quadcopter &quad,
   //   std::cout << "Horizontal error:" << x_pos_error << '\n';
 
   // Compute required attitude
-  float attitude_command =
-      x_pos_pid(x_pos_error, k_p__x, k_i__x, k_d__x, dt) / 9.81;
+  float attitude_command = x_pos_pid(x_pos_error, k_p__x, k_i__x, k_d__x, dt);
 
   attitude_command =
       math_helper::limit(attitude_command, quad.pitch_max(), -quad.pitch_max());
