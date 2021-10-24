@@ -59,7 +59,7 @@ public:
   // // COnvert motor speed to thrust and torque exerted in quadcopter frame
   void motor_speed_to_thrust_torque(const float motor_commands[4]);
   // Quadcopter dynamics
-  void dynamics(const float motor_commands[4], const float dt);
+  void dynamics(const float motor_commands[4]);
   // Quadcopter dynamics with direct body thryst, torque input
   void
   dynamics_direct_thrust_torque(const matrix::Vector3f &body_thrust_command,

@@ -17,10 +17,10 @@ void MyApp::update() {
                           ImVec2(-1, 200))) {
       ImPlot::PlotLine("vertical distance", plot_var::t, plot_var::x,
                        plot_var::euler_timesteps);
-      ImPlot::PushColormap(ImPlotColormap_Cool);
-      ImPlot::PlotLine("setpoint", plot_var::t, plot_var::x_setpoint,
-                       plot_var::euler_timesteps);
-      ImPlot::PopColormap();
+      // ImPlot::PushColormap(ImPlotColormap_Cool);
+      // ImPlot::PlotLine("setpoint", plot_var::t, plot_var::x_setpoint,
+      //                  plot_var::euler_timesteps);
+      // ImPlot::PopColormap();
       ImPlot::EndPlot();
     }
   }
@@ -33,10 +33,10 @@ void MyApp::update() {
                           ImVec2(-1, 200))) {
       ImPlot::PlotLine("vertical distance", plot_var::t, plot_var::y,
                        plot_var::euler_timesteps);
-      ImPlot::PushColormap(ImPlotColormap_Cool);
-      ImPlot::PlotLine("setpoint", plot_var::t, plot_var::y_setpoint,
-                       plot_var::euler_timesteps);
-      ImPlot::PopColormap();
+      // ImPlot::PushColormap(ImPlotColormap_Cool);
+      // ImPlot::PlotLine("setpoint", plot_var::t, plot_var::y_setpoint,
+      //                  plot_var::euler_timesteps);
+      // ImPlot::PopColormap();
       ImPlot::EndPlot();
     }
   }
@@ -48,10 +48,10 @@ void MyApp::update() {
                           ImVec2(-1, 200))) {
       ImPlot::PlotLine("altitude", plot_var::t, plot_var::z,
                        plot_var::euler_timesteps);
-      ImPlot::PushColormap(ImPlotColormap_Cool);
-      ImPlot::PlotLine("setpoint", plot_var::t, plot_var::z_setpoint,
-                       plot_var::euler_timesteps);
-      ImPlot::PopColormap();
+      // ImPlot::PushColormap(ImPlotColormap_Cool);
+      // ImPlot::PlotLine("setpoint", plot_var::t, plot_var::z_setpoint,
+      //                  plot_var::euler_timesteps);
+      // ImPlot::PopColormap();
       ImPlot::EndPlot();
     }
   }
@@ -64,10 +64,11 @@ void MyApp::update() {
                           ImVec2(-1, 200))) {
       ImPlot::PlotLine("roll angle", plot_var::t, plot_var::roll_angle,
                        plot_var::euler_timesteps);
-      ImPlot::PushColormap(ImPlotColormap_Cool);
-      ImPlot::PlotLine("setpoint", plot_var::t, plot_var::roll_angle_setpoint,
-                       plot_var::euler_timesteps);
-      ImPlot::PopColormap();
+      // ImPlot::PushColormap(ImPlotColormap_Cool);
+      // ImPlot::PlotLine("setpoint", plot_var::t,
+      // plot_var::roll_angle_setpoint,
+      //                  plot_var::euler_timesteps);
+      // ImPlot::PopColormap();
       ImPlot::EndPlot();
     }
   }

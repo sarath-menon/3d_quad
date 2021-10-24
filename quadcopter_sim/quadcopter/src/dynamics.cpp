@@ -2,13 +2,19 @@
 #include <iostream>
 
 /// Represents the quadcopter
-void Quadcopter::dynamics(const float motor_commands[4], const float dt) {
+void Quadcopter::dynamics(const float motor_commands[4]) {
 
   // Convert motor speed to body thrust, torques produced
   motor_speed_to_thrust_torque(motor_commands);
 
+  frame.set_state(position_, velocity_, orientation_, angular_velocity_);
+
   // Dynamics of the quadcopter frame
   frame.dynamics(body_thrust_command_, body_torque_command_);
+
+  // acceleration, angular acceleration from frame dynamics
+  acceleration_ = frame.acceleration();
+  angular_acceleration_ = frame.angular_acceleration();
 
   // std::cout << "Motor commands in sim:" << motor_commands[0] << '\t'
   //           << motor_commands[1] << '\t' << motor_commands[2] << '\t'

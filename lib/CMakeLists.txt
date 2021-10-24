@@ -1,3 +1,3 @@
-
+add_subdirectory(communication_lib)
 add_subdirectory(dynamics_lib)
 add_subdirectory(simulator_lib)

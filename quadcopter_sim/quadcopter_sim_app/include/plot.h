@@ -46,7 +46,7 @@ const bool body_yaw_torque_flag = plot_yaml["body_yaw_torque_flag"].as<bool>();
 
 // Initialize shared plotting varibles
 namespace plot_var {
-constexpr static int euler_timesteps = 500;
+constexpr static int euler_timesteps = 300;
 
 // Variables to be plotted
 inline float x[euler_timesteps];
@@ -56,14 +56,6 @@ inline float z[euler_timesteps];
 inline float roll_angle[euler_timesteps];
 inline float pitch_angle[euler_timesteps];
 inline float yaw_angle[euler_timesteps];
-
-inline float x_setpoint[euler_timesteps];
-inline float y_setpoint[euler_timesteps];
-inline float z_setpoint[euler_timesteps];
-
-inline float roll_angle_setpoint[euler_timesteps];
-inline float pitch_angle_setpoint[euler_timesteps];
-inline float yaw_angle_setpoint[euler_timesteps];
 
 inline float thrust[euler_timesteps];
 inline float roll_torque[euler_timesteps];

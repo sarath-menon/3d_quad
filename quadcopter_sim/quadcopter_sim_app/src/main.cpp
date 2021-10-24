@@ -1,18 +1,9 @@
-#include "motor_mixing.h"
-#include "pid_cascaded.h"
-#include "plot.h"
-#include "quadcopter.h"
-#include "simulator.h"
-#include <iostream>
-// Fastdds Headers
-#include "mocap_quadcopterPubSubTypes.h"
-#include "mocap_quadcopterPublisher.h"
+#include "include_helper.h"
 
 int main() {
 
   Quadcopter quad;
   Simulator sim;
-  PidCascadedController controller;
 
   sim.set_parameters("quadcopter_sim/quadcopter_sim_app/parameters/"
                      "simulation_parameters.yaml");
@@ -20,31 +11,25 @@ int main() {
   quad.set_parameters();
   quad.set_initial_conditions();
 
-  // // Fastdds publisher and message initialization
-  mocap_quadcopterPublisher pose_pub;
-  bool fastdds_flag = false;
+  // Create participant. Argument-> Domain id, QOS name
+  DefaultParticipant dp(0, "quad_simulator_2d_qos");
 
-  if (sim.pose_pub_flag()) {
-    fastdds_flag = pose_pub.init();
-  }
+  // Create mocap data publisher
+  DDSPublisher mocap_pub(idl_msg::MocapPubSubType(), "mocap_pose",
+                         dp.participant());
+  mocap_pub.init();
 
-  // To be moved to external controller file
-  const float x_target = 2;
-  const float y_target = 2;
-  const float z_target = 2;
+  // Create motor command subscriber
+  DDSSubscriber motor_sub(idl_msg::QuadMotorCommandPubSubType(),
+                          "motor_commands", dp.participant());
+  motor_sub.init();
 
-  // Declare for now
-  float motor_commands[4] = {0, 0, 0, 0};
-  // float torque_commands[3] = {0, 0, 0};
-
-  matrix::Vector3f body_thrust_command;
-  matrix::Vector3f body_torque_command;
-  matrix::Vector3f attitude_command;
+  // Give time to match pub,sub. Important! Do not delete
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   // Start Simulation
   ///////////////////////////////////////////////////////////////////////////////////////////
-
   for (int i = 0; i < sim.euler_steps(); i++) {
     // Print simulation timestep
     std::cout << "Timestep:" << i + 1 << '\n';
@@ -52,37 +37,57 @@ int main() {
     // Get system state
     quad.sensor_read();
 
-    // Altitude controller
-    body_thrust_command(2) =
-        controller.altitude_controller(quad, z_target, sim.dt());
+    // Construct mocap message
+    cpp_msg::Mocap mocap_msg;
 
-    // Reduced attitude controller
-    attitude_command(0) = controller.y_pos_controller(quad, y_target, sim.dt());
-    attitude_command(1) = controller.x_pos_controller(quad, x_target, sim.dt());
+    mocap_msg.header.id = "srl_quad_sim";
+    mocap_msg.header.timestamp = i + 1;
 
-    // Angular rate controllers
-    body_torque_command(0) =
-        controller.roll_angle_controller(quad, attitude_command(0), sim.dt());
-    body_torque_command(1) =
-        controller.pitch_angle_controller(quad, attitude_command(1), sim.dt());
+    mocap_msg.pose.position.x = quad.position()(0);
+    mocap_msg.pose.position.y = quad.position()(1);
+    mocap_msg.pose.position.z = quad.position()(2);
+
+    mocap_msg.pose.orientation_quat.w = quad.orientation()(0);
+    mocap_msg.pose.orientation_quat.x = quad.orientation()(1);
+    mocap_msg.pose.orientation_quat.y = quad.orientation()(2);
+    mocap_msg.pose.orientation_quat.z = quad.orientation()(3);
+
+    mocap_msg.pose.orientation_euler.roll = quad.euler_orientation()(0);
+    mocap_msg.pose.orientation_euler.pitch = quad.euler_orientation()(1);
+    mocap_msg.pose.orientation_euler.yaw = quad.euler_orientation()(2);
+
+    // Send mocap message
+    mocap_pub.publish(mocap_msg);
+
+    { // wait for control command from subscriber
+      std::unique_lock<std::mutex> lock(motor_sub.listener.m);
+      motor_sub.listener.cv.wait(lock, [] { return sub::new_data; });
+
+      // Reset flag when data received
+      sub::new_data = false;
+    }
+
+    // Insert delay for real time visualization
+    std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
 
     // Dynamics function that accepts bidy thrust, torque commands
-    quad.dynamics_direct_thrust_torque(body_thrust_command,
-                                       body_torque_command);
+    quad.dynamics(sub::msg.motorspeed);
 
     std::cout << "Position:" << quad.position()(0) << '\t' << quad.position()(1)
               << '\t' << quad.position()(2) << '\n';
 
-    // // Simulate using explicit Euler integration
-    // quad.euler_step(sim.dt());
+    // Simulate using explicit Euler integration
+    quad.euler_step(sim.dt());
 
-    // Simulate one timestep
-    sim.simulate_step(quad.position(), quad.velocity(), quad.acceleration(),
-                      quad.orientation(), quad.angular_velocity(),
-                      quad.angular_acceleration());
+    // Not working !!!!!   (Using simulator module)
+    //////////////////////////////////////////////////////////////////////////////////
+    // // Simulate one timestep
+    // sim.simulate_step(quad.position(), quad.velocity(), quad.acceleration(),
+    //                   quad.orientation(), quad.angular_velocity(),
+    //                   quad.angular_acceleration());
 
-    quad.set_state(sim.position(), sim.velocity(), sim.orientation(),
-                   sim.angular_velocity());
+    // quad.set_state(sim.position(), sim.velocity(), sim.orientation(),
+    //                sim.angular_velocity());
 
     // Plot variables for debugging
     //////////////////////////////////////////////////////////////////////////////////
@@ -104,32 +109,7 @@ int main() {
       plot_var::pitch_angle[i] = quad.frame.euler_orientation()(1);
       plot_var::yaw_angle[i] = quad.frame.euler_orientation()(2);
 
-      plot_var::x_setpoint[i] = x_target;
-      plot_var::y_setpoint[i] = y_target;
-      plot_var::z_setpoint[i] = z_target;
-
-      plot_var::roll_angle_setpoint[i] = attitude_command(0);
-
-      plot_var::thrust[i] = body_thrust_command(2);
-
       plot_var::t[i] = i * sim.dt();
-    }
-
-    if (fastdds_flag) {
-      // Publish mocap msg
-      mocap_quadcopter msg;
-
-      msg.index({(uint32_t)i + 1});
-      msg.position({quad.position()(0) * 1000, quad.position()(1) * 1000,
-                    quad.position()(2) * 1000});
-
-      msg.orientation_quaternion({quad.orientation()(1), quad.orientation()(2),
-                                  quad.orientation()(3),
-                                  quad.orientation()(0)});
-
-      pose_pub.publish(msg);
-      // Insert delay for real time visualization
-      std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
     }
   }
 

@@ -1,12 +1,4 @@
-#include "motor_mixing.h"
-#include "pid_cascaded.h"
-#include "plot.h"
-#include "quadcopter.h"
-#include "simulator.h"
-#include <iostream>
-// Fastdds Headers
-#include "mocap_quadcopterPubSubTypes.h"
-#include "mocap_quadcopterPublisher.h"
+#include "include_helper.h"
 
 int main() {
 
@@ -20,12 +12,20 @@ int main() {
   quad.set_parameters();
   quad.set_initial_conditions();
 
-  // // Fastdds publisher and message initialization
-  mocap_quadcopterPublisher pose_pub;
-  bool fastdds_flag = false;
+  // Create participant. Argument-> Domain id, QOS name
+  DefaultParticipant dp(0, "quad_simulator_2d_qos");
 
+  // Create mocap data publisher
+  DDSPublisher mocap_pub(idl_msg::MocapPubSubType(), "mocap_pose",
+                         dp.participant());
+  mocap_pub.init();
+
+  // Give time to match pub,sub. Important! Do not delete
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+  // To publish pose msg or not
   if (sim.pose_pub_flag()) {
-    fastdds_flag = pose_pub.init();
+    mocap_pub.init();
   }
 
   // To be moved to external controller file
@@ -67,11 +67,24 @@ int main() {
         controller.pitch_angle_controller(quad, attitude_command(1), sim.dt());
 
     // Dynamics function that accepts bidy thrust, torque commands
-    quad.dynamics_direct_thrust_torque(body_thrust_command, body_torque_command,
-                                       sim.dt());
+    quad.dynamics_direct_thrust_torque(body_thrust_command,
+                                       body_torque_command);
+
+    std::cout << "Position:" << quad.position()(0) << '\t' << quad.position()(1)
+              << '\t' << quad.position()(2) << '\n';
 
     // Simulate using explicit Euler integration
     quad.euler_step(sim.dt());
+
+    // Not working !!!!!   (Using simulator module)
+    //////////////////////////////////////////////////////////////////////////////////
+    // // Simulate one timestep
+    // sim.simulate_step(quad.position(), quad.velocity(), quad.acceleration(),
+    //                   quad.orientation(), quad.angular_velocity(),
+    //                   quad.angular_acceleration());
+
+    // quad.set_state(sim.position(), sim.velocity(), sim.orientation(),
+    //                sim.angular_velocity());
 
     // Plot variables for debugging
     //////////////////////////////////////////////////////////////////////////////////
@@ -104,19 +117,29 @@ int main() {
       plot_var::t[i] = i * sim.dt();
     }
 
-    if (fastdds_flag) {
+    if (sim.pose_pub_flag()) {
       // Publish mocap msg
-      mocap_quadcopter msg;
+      // Construct mocap message
+      cpp_msg::Mocap mocap_msg;
+      mocap_msg.header.id = "srl_quad_sim";
+      mocap_msg.header.timestamp = i + 1;
 
-      msg.index({(uint32_t)i + 1});
-      msg.position({quad.position()(0) * 1000, quad.position()(1) * 1000,
-                    quad.position()(2) * 1000});
+      mocap_msg.pose.position.x = quad.position()(0);
+      mocap_msg.pose.position.y = quad.position()(1);
+      mocap_msg.pose.position.z = quad.position()(2);
 
-      msg.orientation_quaternion({quad.orientation()(1), quad.orientation()(2),
-                                  quad.orientation()(3),
-                                  quad.orientation()(0)});
+      mocap_msg.pose.orientation_quat.w = quad.orientation()(0);
+      mocap_msg.pose.orientation_quat.x = quad.orientation()(1);
+      mocap_msg.pose.orientation_quat.y = quad.orientation()(2);
+      mocap_msg.pose.orientation_quat.z = quad.orientation()(3);
 
-      pose_pub.publish(msg);
+      // mocap_msg.pose.orientation_euler.roll = quad.true_beta();
+      // mocap_msg.pose.orientation_euler.pitch = 0;
+      // mocap_msg.pose.orientation_euler.yaw = 0;
+
+      // Send mocap message
+      mocap_pub.publish(mocap_msg);
+
       // Insert delay for real time visualization
       std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
     }
