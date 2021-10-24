@@ -1,3 +1,2 @@
 add_subdirectory(quadcopter)
 add_subdirectory(quadcopter_sim_app)
-# add_subdirectory(controller)
