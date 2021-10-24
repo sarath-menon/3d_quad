@@ -36,4 +36,4 @@ pitch_max: 10
 k_f: 6.11e-8
 
 # Relation btw square of motor speed and drag torque
-k_t: 0.0000000015
+k_t: 1.5e-9

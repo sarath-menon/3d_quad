@@ -67,8 +67,8 @@ int main() {
       sub::new_data = false;
     }
 
-    // Insert delay for real time visualization
-    std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
+    // // Insert delay for real time visualization
+    // std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
 
     // Dynamics function that accepts bidy thrust, torque commands
     quad.dynamics(sub::msg.motorspeed);
