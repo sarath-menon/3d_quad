@@ -30,9 +30,10 @@ int main() {
   ///////////////////////////////////////////////////////////////////////////////////////////
   // Start Simulation
   ///////////////////////////////////////////////////////////////////////////////////////////
-  for (int i = 0; i < sim.euler_steps(); i++) {
+  for (int timestep = 0; timestep < sim.euler_steps(); timestep++) {
+
     // Print simulation timestep
-    std::cout << "Timestep:" << i + 1 << '\n';
+    // std::cout << "Timestep:" << timestep+ 1 << '\n';
 
     // Get system state
     quad.sensor_read();
@@ -41,7 +42,7 @@ int main() {
     cpp_msg::Mocap mocap_msg;
 
     mocap_msg.header.id = "srl_quad_sim";
-    mocap_msg.header.timestamp = i + 1;
+    mocap_msg.header.timestamp = timestep + 1;
 
     mocap_msg.pose.position.x = quad.position()(0);
     mocap_msg.pose.position.y = quad.position()(1);
@@ -68,13 +69,14 @@ int main() {
     }
 
     // // Insert delay for real time visualization
-    // std::this_thread::sleep_for(std::chrono::milliseconds(sim.sim_time()));
+    // std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-    // Dynamics function that accepts bidy thrust, torque commands
+    // Dynamics function
     quad.dynamics(sub::msg.motorspeed);
 
-    std::cout << "Position:" << quad.position()(0) << '\t' << quad.position()(1)
-              << '\t' << quad.position()(2) << '\n';
+    // std::cout << "Position:" << quad.position()(0) << '\t' <<
+    // quad.position()(1)
+    //           << '\t' << quad.position()(2) << '\n';
 
     // Simulate using explicit Euler integration
     quad.euler_step(sim.dt());
@@ -92,24 +94,24 @@ int main() {
     // Plot variables for debugging
     //////////////////////////////////////////////////////////////////////////////////
 
-    std::cout << "Euler angle:" << quad.frame.euler_orientation()(0) << '\t'
-              << quad.frame.euler_orientation()(1) << '\t'
-              << quad.frame.euler_orientation()(2) << '\n';
+    // std::cout << "Euler angle:" << quad.frame.euler_orientation()(0) << '\t'
+    //           << quad.frame.euler_orientation()(1) << '\t'
+    //           << quad.frame.euler_orientation()(2) << '\n';
 
-    std::cout << '\n';
+    // std::cout << std::endl;
     //////////////////////////////////////////////////////////////////////////////////
 
     if (plot_flags::plot_enable) {
       // Set variables for plotting
-      plot_var::x[i] = quad.position()(0);
-      plot_var::y[i] = quad.position()(1);
-      plot_var::z[i] = quad.position()(2);
+      plot_var::x[timestep] = quad.position()(0);
+      plot_var::y[timestep] = quad.position()(1);
+      plot_var::z[timestep] = quad.position()(2);
 
-      plot_var::roll_angle[i] = quad.frame.euler_orientation()(0);
-      plot_var::pitch_angle[i] = quad.frame.euler_orientation()(1);
-      plot_var::yaw_angle[i] = quad.frame.euler_orientation()(2);
+      plot_var::roll_angle[timestep] = quad.frame.euler_orientation()(0);
+      plot_var::pitch_angle[timestep] = quad.frame.euler_orientation()(1);
+      plot_var::yaw_angle[timestep] = quad.frame.euler_orientation()(2);
 
-      plot_var::t[i] = i * sim.dt();
+      plot_var::t[timestep] = timestep * sim.dt();
     }
   }
 
