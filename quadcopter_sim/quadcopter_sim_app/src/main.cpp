@@ -60,14 +60,6 @@ int main() {
     // Send mocap message
     mocap_pub.publish(mocap_msg);
 
-    // { // wait for control command from subscriber
-    //   std::unique_lock<std::mutex> lock(motor_sub.listener->m);
-    //   motor_sub.listener->cv.wait(lock, [] { return sub::new_data; });
-
-    //   // Reset flag when data received
-    //   sub::new_data = false;
-    // }
-
     // Blocks until new data is available
     motor_sub.listener->wait_for_data();
 
