@@ -30,7 +30,11 @@ int main() {
   ///////////////////////////////////////////////////////////////////////////////////////////
   // Start Simulation
   ///////////////////////////////////////////////////////////////////////////////////////////
-  for (int timestep = 0; timestep < sim.euler_steps(); timestep++) {
+  int timestep = 0;
+  // for (int timestep = 0; timestep < sim.euler_steps(); timestep++) {
+  for (;;) {
+
+    timestep++;
 
     // Print simulation timestep
     // std::cout << "Timestep:" << timestep+ 1 << '\n';
@@ -63,8 +67,8 @@ int main() {
     // Blocks until new data is available
     motor_sub.listener->wait_for_data();
 
-    // // Insert delay for real time visualization
-    // std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    // Insert delay for real time visualization
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
     // Dynamics function
     quad.dynamics(sub::msg.motorspeed);
