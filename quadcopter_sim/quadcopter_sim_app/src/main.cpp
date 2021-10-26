@@ -20,7 +20,7 @@ int main() {
   mocap_pub.init();
 
   // Create motor command subscriber
-  DDSSubscriber motor_sub(idl_msg::QuadMotorCommandPubSubType(),
+  DDSSubscriber motor_sub(idl_msg::QuadMotorCommandPubSubType(), &sub::msg,
                           "motor_commands", dp.participant());
   motor_sub.init();
 
@@ -60,13 +60,16 @@ int main() {
     // Send mocap message
     mocap_pub.publish(mocap_msg);
 
-    { // wait for control command from subscriber
-      std::unique_lock<std::mutex> lock(motor_sub.listener.m);
-      motor_sub.listener.cv.wait(lock, [] { return sub::new_data; });
+    // { // wait for control command from subscriber
+    //   std::unique_lock<std::mutex> lock(motor_sub.listener->m);
+    //   motor_sub.listener->cv.wait(lock, [] { return sub::new_data; });
 
-      // Reset flag when data received
-      sub::new_data = false;
-    }
+    //   // Reset flag when data received
+    //   sub::new_data = false;
+    // }
+
+    // Blocks until new data is available
+    motor_sub.listener->wait_for_data();
 
     // // Insert delay for real time visualization
     // std::this_thread::sleep_for(std::chrono::milliseconds(5));
