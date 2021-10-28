@@ -22,3 +22,6 @@
 [submodule "lib/communication_lib"]
 	path = lib/communication_lib
 	url = https://github.com/sarath-menon/communication_lib.git
+[submodule "lib/utilities_lib"]
+	path = lib/utilities_lib
+	url = https://github.com/sarath-menon/utilities_lib.git
