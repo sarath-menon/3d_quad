@@ -16,12 +16,6 @@ public:
 
   // Private variables
 private:
-  // Maximum roll angle for quadcopter
-  float roll_max_{};
-
-  // Maximum pitch angle for quadcopter
-  float pitch_max_{};
-
   // Thrust produced by each propeller
   float propeller_thrusts[4] = {0, 0, 0, 0};
 
@@ -40,10 +34,6 @@ private:
 
   // Maximum thrust can be produced by the quadcopter
   float thrust_min_{};
-
-  // Maximum torque that can be produced by the motors
-  float roll_torque_max_{};
-  float pitch_torque_max_{};
 
   // Mixer matrix
   matrix::SquareMatrix<float, 4> mixer_matrix_;
@@ -71,26 +61,12 @@ public:
 
 public:
   /// Getter function
-  const float roll_max() const { return roll_max_; }
-  /// Getter function
-  const float pitch_max() const { return pitch_max_; }
-  /// Getter function
   const float thrust_max() const { return thrust_max_; }
   /// Getter function
   const float thrust_min() const { return thrust_min_; }
-  /// Getter function
-  const float roll_torque_max() const { return roll_torque_max_; }
-  /// Getter function
-  const float pitch_torque_max() const { return pitch_torque_max_; }
+
   /// Getter function
   const matrix::SquareMatrix<float, 4> mixer_matrix() const {
     return mixer_matrix_;
   }
-
-public:
-  /// Setter function
-  void set_roll_max(float roll_max) { roll_max_ = roll_max; }
-
-  /// Setter function
-  void set_pitch_max(float pitch_max) { pitch_max_ = pitch_max; }
 };

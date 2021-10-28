@@ -62,23 +62,11 @@ void Quadcopter::set_parameters() {
   // Set general quadcopter parameters
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  // Set maximum roll and pitch angle
-  set_roll_max(yaml_file["roll_max"].as<float>());
-  // Set maximum roll and pitch angle
-  set_pitch_max(yaml_file["pitch_max"].as<float>());
-
   // Maximum thrust can be produced by the quadcopter
   thrust_max_ = motor[0].thrust_max() * 4;
 
   // Maximum thrust can be produced by the quadcopter
   thrust_min_ = motor[0].thrust_min() * 4;
-
-  // Maximum torque that can be produced by the motors
-  roll_torque_max_ =
-      (motor[1].thrust_max() - motor[1].thrust_min()) * frame.arm_length();
-
-  pitch_torque_max_ =
-      (motor[0].thrust_max() - motor[0].thrust_min()) * frame.arm_length();
 
   // Thrust allocation matrix
 
