@@ -2,14 +2,16 @@
 
 int main() {
 
+  // Initialize logger
+  Logger logger(paths::event_log, paths::data_log);
+
   Quadcopter quad;
   Simulator sim;
 
-  sim.set_parameters("quadcopter_sim/quadcopter_sim_app/parameters/"
-                     "simulation_parameters.yaml");
+  sim.set_parameters(paths::sim_yaml);
 
-  quad.set_parameters();
-  quad.set_initial_conditions();
+  quad.set_parameters(paths::quad_yaml);
+  quad.set_initial_conditions(paths::initial_conditions_yaml);
 
   // Create participant. Argument-> Domain id, QOS name
   DefaultParticipant dp(0, "quad_simulator_2d_qos");
@@ -100,25 +102,25 @@ int main() {
     // std::cout << std::endl;
     //////////////////////////////////////////////////////////////////////////////////
 
-    if (plot_flags::plot_enable) {
-      // Set variables for plotting
-      plot_var::x[timestep] = quad.position()(0);
-      plot_var::y[timestep] = quad.position()(1);
-      plot_var::z[timestep] = quad.position()(2);
+    // if (plot_flags::plot_enable) {
+    //   // Set variables for plotting
+    //   plot_var::x[timestep] = quad.position()(0);
+    //   plot_var::y[timestep] = quad.position()(1);
+    //   plot_var::z[timestep] = quad.position()(2);
 
-      plot_var::roll_angle[timestep] = quad.frame.euler_orientation()(0);
-      plot_var::pitch_angle[timestep] = quad.frame.euler_orientation()(1);
-      plot_var::yaw_angle[timestep] = quad.frame.euler_orientation()(2);
+    //   plot_var::roll_angle[timestep] = quad.frame.euler_orientation()(0);
+    //   plot_var::pitch_angle[timestep] = quad.frame.euler_orientation()(1);
+    //   plot_var::yaw_angle[timestep] = quad.frame.euler_orientation()(2);
 
-      plot_var::t[timestep] = timestep * sim.dt();
-    }
+    //   plot_var::t[timestep] = timestep * sim.dt();
+    // }
   }
 
-  if (plot_flags::plot_enable) {
-    // Initialize visualizer
-    MyApp app;
-    app.run();
-  }
+  // if (plot_flags::plot_enable) {
+  //   // Initialize visualizer
+  //   MyApp app;
+  //   app.run();
+  // }
 
   return 0;
 }

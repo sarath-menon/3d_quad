@@ -2,9 +2,11 @@
 #include "motor_propeller_pair.h"
 #include "quadcopter_frame.h"
 #include "rigidbody.h"
+#include "safety_checks.h"
 #include <math.h>
 #include <matrix/math.hpp>
 #include <random>
+#include <string>
 #include <yaml-cpp/yaml.h>
 /// Represents the quadcopter
 class Quadcopter : public RigidBody {
@@ -41,9 +43,9 @@ private:
   // Public function
 public:
   /// Loads the quadcopter properties from the yaml file
-  void set_parameters();
+  void set_parameters(const std::string &path);
   // Set initial conditions of the quadcopter
-  void set_initial_conditions();
+  void set_initial_conditions(const std::string &path);
   // Read sensor values
   void sensor_read();
   // // COnvert motor speed to thrust and torque exerted in quadcopter frame

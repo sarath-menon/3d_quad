@@ -1,6 +1,6 @@
 #pragma once
 
-#include "plot.h"
+// #include "plot.h"
 #include "quadcopter.h"
 #include "simulator.h"
 #include <iostream>
@@ -12,3 +12,9 @@
 #include "default_subscriber.h"
 #include "motorcommand_sub_callback.h"
 #include "sensor_msgs/msgs/Mocap.h"
+
+// Logger
+#include "logger.h"
+
+// Paths to yaml files
+#include "paths.h"

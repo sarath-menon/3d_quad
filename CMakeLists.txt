@@ -12,6 +12,7 @@ include_directories(external/PX4-Matrix)
 find_package(fastcdr REQUIRED)
 find_package(fastrtps REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
+find_package(spdlog REQUIRED)
 # find_package(Gtest REQUIRED)
 
 add_subdirectory(external)

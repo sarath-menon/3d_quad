@@ -1,11 +1,12 @@
 #include "quadcopter.h"
 
 /// Represents the quadcopter
-void Quadcopter::set_initial_conditions() {
+void Quadcopter::set_initial_conditions(const std::string &path) {
+  // Safety check, see if file exists
+  safety_checks::yaml_file_check(path);
 
   // Load YAML file containing quadcopter properties
-  YAML::Node yaml_file = YAML::LoadFile(
-      "quadcopter_sim/quadcopter_sim_app/parameters/initial_conditions.yaml");
+  YAML::Node yaml_file = YAML::LoadFile(path);
 
   // Set initial position
   matrix::Vector3f intial_position;
