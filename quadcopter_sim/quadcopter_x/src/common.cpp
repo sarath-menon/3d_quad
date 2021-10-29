@@ -1,7 +1,8 @@
 #include "quadcopter_x.h"
 #include <iostream>
 
-void QuadcopterX::motor_speed_to_thrust_torque(const float motor_commands[4]) {
+cpp_msg::ThrustTorqueCommand &
+QuadcopterX::motor_speed_to_thrust_torque(const float motor_commands[4]) {
 
   // Get thrust corresponding to motor speed
   for (int i = 0; i < 4; i++) {
@@ -13,21 +14,24 @@ void QuadcopterX::motor_speed_to_thrust_torque(const float motor_commands[4]) {
   const float moment_arm = frame.arm_length() / std::sqrtf(2);
 
   // Compute net thrust acting on quadcopter
-  body_thrust_command_(2) = propeller_thrusts[0] + propeller_thrusts[1] +
-                            propeller_thrusts[2] + propeller_thrusts[3];
+  thrust_torque_cmd_.thrust = propeller_thrusts[0] + propeller_thrusts[1] +
+                              propeller_thrusts[2] + propeller_thrusts[3];
 
   // Compute net torque acting on the quadcopter
-  body_torque_command_(0) = (propeller_thrusts[0] - propeller_thrusts[1] -
-                             propeller_thrusts[2] + propeller_thrusts[3]) *
-                            moment_arm;
+  thrust_torque_cmd_.roll_torque =
+      (propeller_thrusts[0] - propeller_thrusts[1] - propeller_thrusts[2] +
+       propeller_thrusts[3]) *
+      moment_arm;
 
-  body_torque_command_(1) = (-propeller_thrusts[0] - propeller_thrusts[1] +
-                             propeller_thrusts[2] + propeller_thrusts[3]) *
-                            moment_arm;
+  thrust_torque_cmd_.pitch_torque =
+      (-propeller_thrusts[0] - propeller_thrusts[1] + propeller_thrusts[2] +
+       propeller_thrusts[3]) *
+      moment_arm;
 
-  body_torque_command_(2) = (propeller_thrusts[0] - propeller_thrusts[1] +
-                             propeller_thrusts[2] - propeller_thrusts[3]) *
-                            motor[0].k_t();
+  thrust_torque_cmd_.yaw_torque =
+      (propeller_thrusts[0] - propeller_thrusts[1] + propeller_thrusts[2] -
+       propeller_thrusts[3]) *
+      motor[0].k_t();
 
   // Print values for debugging
 
@@ -40,4 +44,6 @@ void QuadcopterX::motor_speed_to_thrust_torque(const float motor_commands[4]) {
 
   // std::cout << "Torques in simulator:" << body_torques(0) << '\t'
   //           << body_torques(1) << '\t' << body_torques(2) << '\n';
+
+  return thrust_torque_cmd_;
 }

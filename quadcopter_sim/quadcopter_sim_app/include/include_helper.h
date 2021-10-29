@@ -1,7 +1,7 @@
 #pragma once
 
 // #include "plot.h"
-#include "quadcopter_plus.h"
+// #include "quadcopter_plus.h"
 #include "quadcopter_x.h"
 #include "simulator.h"
 #include <iostream>

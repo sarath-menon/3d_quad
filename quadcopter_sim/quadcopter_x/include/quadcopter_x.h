@@ -1,6 +1,7 @@
 #pragma once
 #include "motor_propeller_pair.h"
 #include "quadcopter_frame.h"
+#include "quadcopter_msgs/msgs/ThrustTorqueCommand.h"
 #include "rigidbody.h"
 #include "safety_checks.h"
 #include <math.h>
@@ -21,15 +22,12 @@ private:
   // Thrust produced by each propeller
   float propeller_thrusts[4] = {0, 0, 0, 0};
 
-  // // Net thrust acting on the quadcopter
-  // matrix::Vector3f body_thrust;
-  // // Net torques acting on the quadcopter
-  // matrix::Vector3f body_torques;
-
   // Net thrust acting on the quadcopter
   matrix::Vector3f body_thrust_command_;
   // Net torques acting on the quadcopter
   matrix::Vector3f body_torque_command_;
+  // Thrust-Torque command
+  cpp_msg::ThrustTorqueCommand thrust_torque_cmd_{};
 
   // Maximum thrust can be produced by the quadcopter
   float thrust_max_{};
@@ -48,8 +46,11 @@ public:
   void set_initial_conditions(const std::string &path);
   // Read sensor values
   void sensor_read();
-  // // COnvert motor speed to thrust and torque exerted in quadcopter frame
-  void motor_speed_to_thrust_torque(const float motor_commands[4]);
+
+  // Convert motor speed to thrust and torque exerted in quadcopter frame
+  cpp_msg::ThrustTorqueCommand &
+  motor_speed_to_thrust_torque(const float motor_commands[4]);
+
   // Quadcopter dynamics
   void dynamics(const float motor_commands[4]);
   // Quadcopter dynamics with direct body thryst, torque input

@@ -15,7 +15,7 @@ target_include_directories(quadcopter_x_lib PUBLIC include)
 target_link_libraries(quadcopter_x_lib  PRIVATE 
 primitives_lib
 parts_lib
-# helper_lib
+comm_lib
 )
 
 

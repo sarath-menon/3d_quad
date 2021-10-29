@@ -5,12 +5,13 @@
 void QuadcopterX::dynamics(const float motor_commands[4]) {
 
   // Convert motor speed to body thrust, torques produced
-  motor_speed_to_thrust_torque(motor_commands);
+  // Thrust-Torque command
+  thrust_torque_cmd_ = motor_speed_to_thrust_torque(motor_commands);
 
   frame.set_state(position_, velocity_, orientation_, angular_velocity_);
 
   // Dynamics of the quadcopter frame
-  frame.dynamics(body_thrust_command_, body_torque_command_);
+  frame.dynamics(thrust_torque_cmd_);
 
   // acceleration, angular acceleration from frame dynamics
   acceleration_ = frame.acceleration();
@@ -39,7 +40,7 @@ void QuadcopterX::dynamics_direct_thrust_torque(
   frame.set_state(position_, velocity_, orientation_, angular_velocity_);
 
   // Dynamics of the quadcopter frame
-  frame.dynamics(body_thrust_command_, body_torque_command_);
+  frame.dynamics(thrust_torque_cmd_);
 
   // acceleration, angular acceleration from frame dynamics
   acceleration_ = frame.acceleration();
