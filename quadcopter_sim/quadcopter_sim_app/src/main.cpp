@@ -6,9 +6,6 @@ int main() {
   Logger logger(paths::event_log, paths::data_log);
 
   Quadcopter quad;
-  Simulator sim;
-
-  sim.set_parameters(paths::sim_yaml);
 
   quad.set_parameters(paths::quad_yaml);
   quad.set_initial_conditions(paths::initial_conditions_yaml);
@@ -19,12 +16,31 @@ int main() {
   // Create mocap data publisher
   DDSPublisher mocap_pub(idl_msg::MocapPubSubType(), "mocap_pose",
                          dp.participant());
-  mocap_pub.init();
+
+  // Initialize subscriber with check
+  if (mocap_pub.init() == true) {
+    logger.log_info("Initialized Mocap publisher");
+  } else {
+    logger.log_error("Mocap publisher could be initialized");
+    std::exit(EXIT_FAILURE);
+  }
 
   // Create motor command subscriber
-  DDSSubscriber motor_sub(idl_msg::QuadMotorCommandPubSubType(), &sub::msg,
-                          "motor_commands", dp.participant());
-  motor_sub.init();
+  DDSSubscriber motor_cmd_sub(idl_msg::QuadMotorCommandPubSubType(), &sub::msg,
+                              "motor_commands", dp.participant());
+
+  // Initialize publisher with check
+  if (motor_cmd_sub.init() == true) {
+    logger.log_info("Initialized Motor command subscriber");
+  } else {
+    logger.log_error("Motor command subscriber could be initialized");
+    std::exit(EXIT_FAILURE);
+  }
+
+  // Initialize simulator
+  Simulator sim;
+  sim.set_parameters(paths::sim_yaml);
+  logger.log_info("Initialized Simulator");
 
   // Give time to match pub,sub. Important! Do not delete
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -67,7 +83,7 @@ int main() {
     mocap_pub.publish(mocap_msg);
 
     // Blocks until new data is available
-    motor_sub.listener->wait_for_data();
+    motor_cmd_sub.listener->wait_for_data();
 
     // Insert delay for real time visualization
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
