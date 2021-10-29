@@ -1,7 +1,7 @@
-#include "quadcopter.h"
+#include "quadcopter_x.h"
 
 /// Represents the quadcopter
-void Quadcopter::euler_step(const float dt) {
+void QuadcopterX::euler_step(const float dt) {
 
   frame.set_state(position(), velocity(), orientation(), angular_velocity());
   frame.euler_step(dt);

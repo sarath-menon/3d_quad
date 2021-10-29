@@ -1,7 +1,7 @@
-#include "quadcopter.h"
+#include "quadcopter_plus.h"
 
 /// Represents the quadcopter
-void Quadcopter::sensor_read() {
+void QuadcopterPlus::sensor_read() {
 
   // Initialize random number generator
   std::random_device rd{};

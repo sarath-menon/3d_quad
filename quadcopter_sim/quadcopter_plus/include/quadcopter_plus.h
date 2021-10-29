@@ -9,7 +9,7 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 /// Represents the quadcopter
-class Quadcopter : public RigidBody {
+class QuadcopterPlus : public RigidBody {
 
 public:
   // Load parts from the library

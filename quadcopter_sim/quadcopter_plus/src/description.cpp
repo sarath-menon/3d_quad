@@ -1,7 +1,7 @@
-#include "quadcopter.h"
+#include "quadcopter_plus.h"
 
 /// Represents the quadcopter
-void Quadcopter::set_parameters(const std::string &path) {
+void QuadcopterPlus::set_parameters(const std::string &path) {
 
   // Safety check, see if file exists
   safety_checks::yaml_file_check(path);

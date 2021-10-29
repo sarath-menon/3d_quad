@@ -1,8 +1,8 @@
-#include "quadcopter.h"
+#include "quadcopter_x.h"
 #include <iostream>
 
 /// Represents the quadcopter
-void Quadcopter::dynamics(const float motor_commands[4]) {
+void QuadcopterX::dynamics(const float motor_commands[4]) {
 
   // Convert motor speed to body thrust, torques produced
   motor_speed_to_thrust_torque(motor_commands);
@@ -28,7 +28,7 @@ void Quadcopter::dynamics(const float motor_commands[4]) {
 }
 
 /// Represents the quadcopter
-void Quadcopter::dynamics_direct_thrust_torque(
+void QuadcopterX::dynamics_direct_thrust_torque(
     const matrix::Vector3f &body_thrust_command,
     const matrix::Vector3f &body_torque_command) {
 

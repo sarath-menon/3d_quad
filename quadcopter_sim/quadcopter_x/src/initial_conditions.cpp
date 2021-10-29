@@ -1,7 +1,7 @@
-#include "quadcopter.h"
+#include "quadcopter_x.h"
 
 /// Represents the quadcopter
-void Quadcopter::set_initial_conditions(const std::string &path) {
+void QuadcopterX::set_initial_conditions(const std::string &path) {
   // Safety check, see if file exists
   safety_checks::yaml_file_check(path);
 

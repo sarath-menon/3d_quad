@@ -5,8 +5,7 @@ int main() {
   // Initialize logger
   Logger logger(paths::event_log, paths::data_log);
 
-  Quadcopter quad;
-
+  QuadcopterX quad;
   quad.set_parameters(paths::quad_yaml);
   quad.set_initial_conditions(paths::initial_conditions_yaml);
 
