@@ -3,7 +3,7 @@
 add_library(quadcopter_x_lib
 src/description.cpp
 src/initial_conditions.cpp
-src/common.cpp
+src/motor_speed_to_thrust.cpp
 src/dynamics.cpp
 src/euler_integration.cpp
 src/sensing.cpp

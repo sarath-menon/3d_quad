@@ -1,6 +1,6 @@
 #include "quadcopter_x.h"
 
-/// Represents the quadcopter
+/// Not relevant for now
 void QuadcopterX::sensor_read() {
 
   // Initialize random number generator
